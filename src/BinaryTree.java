@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 public class BinaryTree {
 
+    //Checking to see if i'm in the new branch - anne
     BinaryTreeNode root;
     ArrayList<BinaryTreeNode> binaryTreeNodes = new ArrayList<>();
 

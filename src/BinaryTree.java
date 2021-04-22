@@ -1,10 +1,17 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class BinaryTree {
 
-    BinaryTreeNode root;
-    ArrayList<BinaryTreeNode> binaryTreeNodes = new ArrayList<>();
+    //I will try to do it without an ArrayList, as I can not seem to get it to work
+    private BinaryTreeNode root;
+    //ArrayList<BinaryTreeNode> binaryTreeNodes = new ArrayList<>();
 
+
+    public BinaryTree() {
+
+    }
 
     public BinaryTreeNode getRoot() {
         return root;
@@ -15,128 +22,152 @@ public class BinaryTree {
     }
 
     public boolean isEmpty() {
-        return binaryTreeNodes.isEmpty();
+        if (root == null) {
+            return true;
+        } else return false;
     }
 
-    public int size() {
-        return binaryTreeNodes.size();
-    }
-
-    public boolean contains(int element)
+    public int size()
     {
-        boolean flag = false;
+        ArrayList<Integer> tmp = inOrder();
+        return tmp.size();    }
 
-        for (int i = 0; i < binaryTreeNodes.size() ; i++) {
 
-            if(binaryTreeNodes.get(i).equals(element))
-                flag = true;
+    //when i ran the test, this method was the first to give a compiler error. therefore i made a new one with the BinaryTreeNode as argument
+    //so first we check if the node is null and returns false if yes. Then we check if the node is the same as the element, and returns true. Otherwise, we will if the element is smaller than the root.getElement, and if it is we know
+    //that it is a left child. if not then it is a right child. Håber det virker boys
+
+    public boolean contains(int value) {
+        return contains(root, value);
+    }
+
+    private boolean contains(BinaryTreeNode node, int value) {
+        if(node == null)
+            return false;
+        else if (node.getElement()==value)
+            return true;
+        else {
+            if(value < node.getElement())
+                return contains(node.getLeftChild(), value);
+            else
+                return contains(node.getRightChild(), value);
         }
-        return flag;
     }
 
-    public ArrayList<BinaryTreeNode> inOrder()
+    public ArrayList<Integer> inOrder()
     {
-        ArrayList<BinaryTreeNode> inOrderList = new ArrayList<>();
-
-        if(root == null)
+        //left-node-right
+        BinaryTreeNode currentNode = root;
+        if (isEmpty()) {
             return null;
-
-        return inOrderList;
+        }
+        return inOrder(currentNode, new ArrayList<>());
     }
 
-    public ArrayList<BinaryTreeNode> preOrder()
+    private ArrayList<Integer> inOrder(BinaryTreeNode node, ArrayList<Integer> res){
+        if (node == null){
+            return null;
+        }
+        inOrder(node.getLeftChild(), res);
+        res.add(node.getElement());
+        inOrder(node.getRightChild(), res);
+        return res;
+    }
+
+
+    public ArrayList<Integer> preOrder()
     {
-        return null;
+        BinaryTreeNode currentNode = root;
+        //node-left-right
+        if (isEmpty()) {
+            return null;
+        } else {
+            return preOrder(currentNode, new ArrayList<>());
+        }
     }
 
-    public ArrayList<BinaryTreeNode> postOrder()
+    private ArrayList<Integer> preOrder(BinaryTreeNode node, ArrayList<Integer> res){
+        if (node == null){
+            return null;
+        }
+        res.add(node.getElement());
+        preOrder(node.getLeftChild(), res);
+        preOrder(node.getRightChild(), res);
+
+        return res;
+    }
+
+    public ArrayList<Integer> postOrder()
     {
-        return null;
+        BinaryTreeNode currentNode = root;
+        if (isEmpty()) {
+            return null;
+        } else {
+            return postOrder(currentNode, new ArrayList<>());
+        }
     }
 
-    public ArrayList<BinaryTreeNode> levelOrder()
-    {
-        return null;
+    public ArrayList<Integer> postOrder(BinaryTreeNode node, ArrayList<Integer> res) {
+        if (node == null){
+            return null;
+        }
+        postOrder(node.getLeftChild(), res);
+        postOrder(node.getRightChild(), res);
+        res.add(node.getElement());
+
+        return res;
     }
 
-    public int height()
-    {
-        return 0;
+    public ArrayList<Integer> levelOrder() {
+        ArrayList<Integer> toReturn = new ArrayList<Integer>();
+
+        Queue<BinaryTreeNode> queue = new LinkedList<BinaryTreeNode>();
+
+        BinaryTreeNode currentNode;
+
+        if (isEmpty()) {
+            return null;
+        }
+        queue.add(root);
+
+        while (!queue.isEmpty()) {
+            currentNode = queue.remove();
+            if (currentNode.getLeftChild() != null)
+                queue.add(currentNode.getLeftChild());
+            if (currentNode.getRightChild() != null)
+                queue.add(currentNode.getRightChild());
+            toReturn.add(currentNode.getElement());
+        }
+        return toReturn;
     }
 
-    public void printTree() {
-        ArrayList<BinaryTreeNode> parent = new ArrayList<BinaryTreeNode>();
-        parent.add(root);
-        printT(parent, 64);
-    }
 
-    private void printT(ArrayList<BinaryTreeNode> parent, int left) {
-        ArrayList<BinaryTreeNode> children = new ArrayList<BinaryTreeNode>();
-        BinaryTreeNode current;
-        boolean moreNodes = false;
-        boolean firstNode = true;
-        BinaryTreeNode dummy = new BinaryTreeNode(0);
+    public int height() {
+        if (root == null)
+            return -1;
 
-        int dist = 0;
-        System.out.println();
-        System.out.println();
+        Queue<BinaryTreeNode> heightQueue = new LinkedList<>();
 
-        while (!parent.isEmpty()) {
-            current = parent.remove(0);
+        heightQueue.add(root);
+        int height = -1;
 
-            if (firstNode) {
-                printSpace(left);
-                if (current.getElement() != 0)
-                    System.out.print(current.getElement());
-                dist = 2 * left;
-                firstNode = false;
+        while (true) {
+            int nodeCount = heightQueue.size();
+            if (nodeCount == 0)
+                return height;
+            else
+                height++;
 
-                if (current.getElement() != 0) {
-                    if (current.getLeftChild() != null) {
-                        children.add(current.getLeftChild());
-                        moreNodes = true;
-                    } else
-                        children.add(dummy);
-                    if (current.getRightChild() != null) {
-                        children.add(current.getRightChild());
-                        moreNodes = true;
-                    } else
-                        children.add(dummy);
-                } else {
-                    children.add(dummy);
-                    children.add(dummy);
-                }
-            } else {
-                if (current.getElement() != 0) {
-                    printSpace(dist - 1);
-                    System.out.print(current.getElement());
-                    if (current.getLeftChild() != null) {
-                        children.add(current.getLeftChild());
-                        moreNodes = true;
-                    } else
-                        children.add(dummy);
-                    if (current.getRightChild() != null) {
-                        children.add(current.getRightChild());
-                        moreNodes = true;
-                    } else
-                        children.add(dummy);
-                } else {
-                    printSpace(dist - 1);
-                    System.out.print(" ");
-                    children.add(dummy);
-                    children.add(dummy);
-                }
+            while (nodeCount > 0) {
+                BinaryTreeNode poll = heightQueue.poll();
+                if (poll.getLeftChild() != null)
+                    heightQueue.add(poll.getLeftChild());
+                if (poll.getRightChild() != null)
+                    heightQueue.add(poll.getRightChild());
+                nodeCount--;
             }
         }
-
-        if (moreNodes)
-            printT(children, left / 2);
-
     }
 
-    private void printSpace(int pos) {
-        for (int i = 0; i < pos; i++)
-            System.out.print(" ");
-    }
 
 }

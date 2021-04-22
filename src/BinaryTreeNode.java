@@ -1,44 +1,49 @@
-
-
 public class BinaryTreeNode {
 
-    private int number;
-    private BinaryTreeNode leftChild;
-    private BinaryTreeNode rightChild;
+    private int value;
+    private BinaryTreeNode leftNode;
+    private BinaryTreeNode rightNode;
 
-    public BinaryTreeNode(int element)
-        {
-            this.number = element;
-        }
+    public BinaryTreeNode(int value) {
+        this.value = value;
+        leftNode = null;
+        rightNode = null;
+    }
 
+    public BinaryTreeNode(int value, BinaryTreeNode leftNode, BinaryTreeNode rightNode) {
+        this.value = value;
+        this.leftNode = leftNode;
+        this.rightNode = rightNode;
+    }
 
     public void setElement(int element)
-        {
-            number = element;
-        }
+    {
+        value = element;
+    }
 
     public int getElement()
-        {
-            return number;
-        }
+    {
+        return value;
+    }
+
+    public void addLeftChild(BinaryTreeNode node)
+    {
+        leftNode = node;
+    }
+
+    public void addRightChild(BinaryTreeNode node)
+    {
+        rightNode = node;
+    }
 
     public BinaryTreeNode getLeftChild()
-        {
-            return leftChild;
-        }
+    {
+        return leftNode;
+    }
 
     public BinaryTreeNode getRightChild()
-        {
-            return rightChild;
-        }
+    {
+        return rightNode;
+    }
 
-    public void addLeftChild(BinaryTreeNode leftChild)
-        {
-            this.leftChild = leftChild;
-        }
-
-    public void addRightChild(BinaryTreeNode rightChild)
-        {
-            this.rightChild = rightChild;
-        }
 }
